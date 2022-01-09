@@ -47,7 +47,7 @@ struct VertexType
 		}
 	}
 
-	size_t get_offset(DWORD vertex_type) const
+	[[nodiscard]] size_t get_offset(DWORD vertex_type) const
 	{
 		if (vertex_type & D3DFVF_XYZRHW)
 		{
@@ -77,7 +77,7 @@ struct VertexType
 		return 0;
 	}
 
-	size_t get_vertex_size() const
+	[[nodiscard]] size_t get_vertex_size() const
 	{
 		return _vertex_size;
 	}

@@ -168,12 +168,12 @@ MD3DERROR d3dSetTextureStageState(DWORD dwStage, D3DTEXTURESTAGESTATETYPE dwStat
 
 MD3DERROR d3dTriangles(DWORD dwVertexTypeDesc, LPVOID lpvVertices, DWORD dwVertexCount)
 {
-	return graphics::get_renderer().d3dTriangles(dwVertexTypeDesc, lpvVertices, dwVertexCount);
+	return MD3D_OK;
 }
 
 MD3DERROR d3dTriangleStrip(DWORD dwVertexTypeDesc, LPVOID lpvVertices, DWORD dwVertexCount)
 {
-	return graphics::get_renderer().d3dTriangleStrip(dwVertexTypeDesc, lpvVertices, dwVertexCount);
+	return MD3D_OK;
 }
 
 MD3DERROR d3dTriangleFan(DWORD dwVertexTypeDesc, LPVOID lpvVertices, DWORD dwVertexCount)

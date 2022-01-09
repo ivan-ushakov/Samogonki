@@ -43,8 +43,6 @@ Renderer::Renderer(id<MTLDevice> device, id<MTLLibrary> library) :
 	}
 }
 
-Renderer::~Renderer() {}
-
 TextureManagerInterface& Renderer::get_texture_manager()
 {
 	return *_texture_manager;
@@ -54,7 +52,9 @@ void Renderer::begin(MTKView* view)
 {
 	_view = view;
 
-	_uniforms.projection_matrix = matrix::make_ortho_projection(0, 1024, 768, 0, -1, 1);
+	const auto width = static_cast<float>(view.frame.size.width);
+	const auto height = static_cast<float>(view.frame.size.height);
+	_uniforms.projection_matrix = matrix::make_ortho_projection(0, width, height, 0, -1, 1);
 	_command_buffer = [_command_queue.get() commandBuffer];
 }
 
@@ -190,16 +190,6 @@ MD3DERROR Renderer::d3dGetRenderState(D3DRENDERSTATETYPE dwRenderStateType, DWOR
 MD3DERROR Renderer::d3dSetTextureStageState(DWORD dwStage, D3DTEXTURESTAGESTATETYPE dwState, DWORD dwValue)
 {
 	_render_state.set_texture_stage_state(dwStage, dwState, dwValue);
-	return MD3D_OK;
-}
-
-MD3DERROR Renderer::d3dTriangles(DWORD dwVertexTypeDesc, LPVOID lpvVertices, DWORD dwVertexCount)
-{
-	return MD3D_OK;
-}
-
-MD3DERROR Renderer::d3dTriangleStrip(DWORD dwVertexTypeDesc, LPVOID lpvVertices, DWORD dwVertexCount)
-{
 	return MD3D_OK;
 }
 

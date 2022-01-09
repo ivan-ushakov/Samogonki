@@ -22,7 +22,7 @@ public:
 	static std::unique_ptr<Renderer> shared;
 
 	Renderer(id<MTLDevice> device, id<MTLLibrary> library);
-	~Renderer();
+	~Renderer() override = default;
 
 	Renderer(const Renderer&) = delete;
 	Renderer(Renderer&&) = delete;
@@ -40,8 +40,6 @@ public:
 	MD3DERROR d3dSetRenderState(D3DRENDERSTATETYPE dwRenderStateType, DWORD dwRenderState) override;
 	MD3DERROR d3dGetRenderState(D3DRENDERSTATETYPE dwRenderStateType, DWORD *lpdwRenderState) override;
 	MD3DERROR d3dSetTextureStageState(DWORD dwStage, D3DTEXTURESTAGESTATETYPE dwState, DWORD dwValue) override;
-	MD3DERROR d3dTriangles(DWORD dwVertexTypeDesc, LPVOID lpvVertices, DWORD dwVertexCount) override;
-	MD3DERROR d3dTriangleStrip(DWORD dwVertexTypeDesc, LPVOID lpvVertices, DWORD dwVertexCount) override;
 	MD3DERROR d3dTriangleFan(DWORD dwVertexTypeDesc, LPVOID lpvVertices, DWORD dwVertexCount) override;
 	MD3DERROR d3dTrianglesIndexed(
 		DWORD dwVertexTypeDesc,
@@ -68,7 +66,6 @@ private:
 	void setup_depth_states();
 	void setup_pipeline_states();
 	void prepare_render_state(size_t index_count);
-	size_t get_pipeline_state(const d3d::RenderState&);
 	void add_vertex(DWORD vertex_type, LPVOID vertices, DWORD index);
 
 private:
@@ -112,12 +109,12 @@ private:
 		size_t length;
 		size_t offset;
 
-		size_t end() const
+		[[nodiscard]] size_t end() const
 		{
 			return length + offset;
 		}
 
-		BufferView next() const
+		[[nodiscard]] BufferView next() const
 		{
 			return BufferView{0, end()};
 		}

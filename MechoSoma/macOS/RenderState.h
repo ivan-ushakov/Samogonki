@@ -17,7 +17,7 @@ namespace graphics::d3d
 			_options[type] = value;
 		}
 
-		DWORD get_option(D3DRENDERSTATETYPE type) const
+		[[nodiscard]] DWORD get_option(D3DRENDERSTATETYPE type) const
 		{
 			return _options.at(type);
 		}
@@ -27,7 +27,7 @@ namespace graphics::d3d
 			_texture_stages[stage].texture_handle = handle;
 		}
 
-		std::optional<DWORD> get_texture(DWORD stage) const
+		[[nodiscard]] std::optional<DWORD> get_texture(DWORD stage) const
 		{
 			return _texture_stages[stage].texture_handle;
 		}
@@ -37,12 +37,12 @@ namespace graphics::d3d
 			_texture_stages[stage].states[state] = value;
 		}
 
-		DWORD get_texture_stage_state(DWORD stage, D3DTEXTURESTAGESTATETYPE state) const
+		[[nodiscard]] DWORD get_texture_stage_state(DWORD stage, D3DTEXTURESTAGESTATETYPE state) const
 		{
 			return _texture_stages[stage].states.at(state);
 		}
 
-		FragmentShaderParameters get_fragment_shader_parameters() const
+		[[nodiscard]] FragmentShaderParameters get_fragment_shader_parameters() const
 		{
 			FragmentShaderParameters result;
 			switch (get_texture_stage_state(0, D3DTSS_COLOROP))

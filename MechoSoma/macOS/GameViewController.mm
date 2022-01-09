@@ -10,8 +10,6 @@
 #include "xgraph.h"
 #include "xtool.h"
 
-#define METAL_FRAME_CAPTURE
-
 @interface GameViewController() <MTKViewDelegate>
 
 @property (nonatomic, retain) MTKView *metalView;
@@ -44,7 +42,7 @@
 	self.metalView.delegate = self;
 	self.metalView.clearColor = MTLClearColorMake(0.0, 0.0, 0.0, 1.0);
 	self.metalView.depthStencilPixelFormat = MTLPixelFormatDepth32Float;
-	self.metalView.frame = NSMakeRect(0, 0, 1024, 768);
+	self.metalView.frame = NSMakeRect(0, 0, 800, 600);
 	self.metalView.preferredFramesPerSecond = 30;
 
 	self.library = [self.metalView.device newDefaultLibrary];
@@ -137,6 +135,16 @@
 {
 	[self handleMouseEvent:event];
 	[super mouseMoved:event];
+}
+
+- (void)mouseEntered:(NSEvent *)event
+{
+	[NSCursor hide];
+}
+
+- (void)mouseExited:(NSEvent *)event
+{
+	[NSCursor unhide];
 }
 
 - (void)handleMouseEvent:(NSEvent *)event
