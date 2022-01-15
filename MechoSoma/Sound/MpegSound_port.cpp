@@ -51,5 +51,5 @@ int MpegSound::GetVolume()
 
 int MpegSound::GetLen()
 {
-	return 0;
+	return -1;
 }

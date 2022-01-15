@@ -4274,7 +4274,7 @@ void fxlabMovieDispacther::Close(void)
 
 void fxlabMovieDispacther::Clear(void)
 {
-	std::unordered_map<const char*,fxlabMovieDataType,hash<const char*>,fxlabMovieEqStr>::iterator i_movie;
+	std::unordered_map<std::string,fxlabMovieDataType>::iterator i_movie;
 
 	FOR_EACH(MovieList,i_movie){
 		if(i_movie->second.ProcessPoint.Process)
@@ -4290,7 +4290,7 @@ void fxlabMovieDispacther::RegisterName(const char* name,int type,int key_id)
 
 void fxlabMovieDispacther::UpdateProcess(const char* name,const Vect3f& position,const Vect3f& velocity,int status)
 {
-	std::unordered_map<const char*,fxlabMovieDataType,hash<const char*>,fxlabMovieEqStr>::iterator i_movie;
+	std::unordered_map<std::string,fxlabMovieDataType>::iterator i_movie;
 	fxlabGeneralObjectType* t;
 	fxlabProcessInterface* p;
 

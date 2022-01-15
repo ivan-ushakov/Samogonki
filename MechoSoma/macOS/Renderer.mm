@@ -81,6 +81,11 @@ MD3DERROR Renderer::d3dBeginScene()
 
 MD3DERROR Renderer::d3dEndScene()
 {
+	if (_commands.empty())
+	{
+		return MD3D_OK;
+	}
+
 	auto render_pass_descriptor = _view.currentRenderPassDescriptor;
 	if (render_pass_descriptor == nil)
 	{

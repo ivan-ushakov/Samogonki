@@ -323,7 +323,7 @@ struct fxlabMovieEqStr
 
 struct fxlabMovieDispacther
 {
-	std::unordered_map<const char*,fxlabMovieDataType,hash<const char*>,fxlabMovieEqStr> MovieList;
+	std::unordered_map<std::string,fxlabMovieDataType> MovieList;
 
 	void Open(void);
 	void Close(void);
