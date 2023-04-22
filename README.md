@@ -20,8 +20,24 @@ Look into buildscripts:
 * [Windows](https://github.com/KD-lab-Open-Source/Samogonki/blob/cmake/.github/workflows/windows.yaml)
 
 ### macOS
+#### libjpeg
 Download [libjpeg-turbo](https://sourceforge.net/projects/libjpeg-turbo/files/2.1.0/libjpeg-turbo-ios-2.1.0.dmg/download)
 and unpack it to `3rdparty/libjpeg-turbo` folder.
+
+#### FFmpeg
+1. Download [FFmpeg](https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n4.3.6.tar.gz)
+2. Unpack and enter FFmpeg-n4.3.6 folder
+3. Run following commands
+```
+configure --prefix=build --disable-programs --disable-doc --disable-avdevice --disable-avfilter --disable-network --disable-pixelutils --disable-everything --enable-decoder=pcm* --enable-demuxer=wav --enable-protocol=file
+make
+make install
+```
+4. Copy to 3rdparty
+```
+cp -r build/include 3rdparty/FFmpeg-n4.3.6/
+cp -r build/lib 3rdparty/FFmpeg-n4.3.6/
+```
 
 ## How to run
 

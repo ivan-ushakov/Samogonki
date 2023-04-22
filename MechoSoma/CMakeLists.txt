@@ -457,6 +457,23 @@ set(GAME_SOURCES
         iScreen/savegame.cpp)
 set(LIBRARY_NAME game)
 
+include(FetchContent)
+
+FetchContent_Declare(
+  clunk
+  GIT_REPOSITORY https://github.com/whoozle/clunk
+  GIT_TAG c36e1234f450952e74dddedd3a57d7b994b7c192
+)
+set(WITH_SDL2 OFF)
+FetchContent_MakeAvailable(clunk)
+
+FetchContent_Declare(
+  portaudio
+  GIT_REPOSITORY https://github.com/PortAudio/portaudio
+  GIT_TAG 591c4afad197ef2fd32b0ab05feba729d97531ec
+)
+FetchContent_MakeAvailable(portaudio)
+
 include_directories(aciparser)
 include_directories(FX)
 include_directories(IVisGeneric)
@@ -482,10 +499,13 @@ include_directories(iScreen/SCRIPTS)
 if (APPLE)
     include_directories(../3rdparty/libjpeg-turbo/include)
     link_directories(../3rdparty/libjpeg-turbo/lib)
+
+    include_directories(../3rdparty/FFmpeg-n4.3.6/include)
+    link_directories(../3rdparty/FFmpeg-n4.3.6/lib)
 endif()
 
 add_library(${LIBRARY_NAME} ${GAME_SOURCES})
-target_link_libraries(${LIBRARY_NAME} PUBLIC 3dsftk3 iniparser jpeg)
+target_link_libraries(${LIBRARY_NAME} PUBLIC 3dsftk3 iniparser jpeg clunk PortAudio avcodec avformat avutil z iconv)
 
 set_target_properties(
         ${LIBRARY_NAME}
