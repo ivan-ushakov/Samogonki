@@ -499,13 +499,19 @@ include_directories(iScreen/SCRIPTS)
 if (APPLE)
     include_directories(../3rdparty/libjpeg-turbo/include)
     link_directories(../3rdparty/libjpeg-turbo/lib)
-
-    include_directories(../3rdparty/FFmpeg-n4.3.6/include)
-    link_directories(../3rdparty/FFmpeg-n4.3.6/lib)
 endif()
 
+include_directories(../3rdparty/FFmpeg-n4.3.6/include)
+link_directories(../3rdparty/FFmpeg-n4.3.6/lib)
+
+find_package(ZLIB REQUIRED)
+
 add_library(${LIBRARY_NAME} ${GAME_SOURCES})
-target_link_libraries(${LIBRARY_NAME} PUBLIC 3dsftk3 iniparser jpeg clunk PortAudio avcodec avformat avutil z iconv)
+target_link_libraries(${LIBRARY_NAME} PUBLIC 3dsftk3 iniparser jpeg clunk PortAudio avformat avcodec avutil ZLIB::ZLIB)
+
+if (APPLE)
+    target_link_libraries(${LIBRARY_NAME} PUBLIC iconv)
+endif()
 
 set_target_properties(
         ${LIBRARY_NAME}
