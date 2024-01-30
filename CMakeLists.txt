@@ -1,47 +1,28 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.20)
 
-project(MOONSHINE_RUNNERS VERSION 1.0.0 LANGUAGES C CXX)
+project(EDITOR VERSION 1.0.0 LANGUAGES C CXX)
 
 SET(CMAKE_CONFIGURATION_TYPES "Release;Debug;MinSizeRel;RelWithDebInfo")
 
-set(APPLICATION_NAME moonshine-runners)
+set(APPLICATION_NAME Editor)
 
-if (UNIX AND NOT APPLE)
-    set(LINUX TRUE)
-endif ()
+find_package(ZLIB REQUIRED)
+find_package(Iconv REQUIRED)
 
-add_definitions(-D_MECHOSOMA_ -D_USE_TILEMAP_ -D_USE_TERRA_ -DNASSERT -D_FINAL_VERSION_ -D_MPPLUS_SOUNDTRACK_)
+include_directories(3rdparty/SDL-2.26.5/include)
+link_directories(3rdparty/SDL-2.26.5/lib)
 
-if (LINUX)
-    add_definitions(-D__forceinline=inline -Dstricmp=strcasecmp -D_DEBUG)
-
-    add_custom_target(sokol-shaders
-            COMMAND "${CMAKE_CURRENT_LIST_DIR}/3rdparty/sokol-tools-bin/bin/linux/sokol-shdc"
-            --input "${CMAKE_CURRENT_LIST_DIR}/MechoSoma/app/sokol/shader.glsl"
-            --output "${CMAKE_CURRENT_LIST_DIR}/MechoSoma/app/sokol-shader.h"
-            --slang glsl330)
-endif (LINUX)
-
-add_compile_options(-fsigned-char)
-# add_compile_options(-Werror=shift-negative-value)
-# add_compile_options(-Werror=dangling-else)
-# add_compile_options(-Werror=parentheses)
-add_compile_options(-Werror=delete-non-virtual-dtor)
-add_compile_options(-Werror=return-type)
-add_compile_options(-Werror=write-strings)
-add_compile_options(-Werror=delete-incomplete)
-
-if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    add_compile_options(-Werror=mismatched-new-delete)
-endif ()
-
-add_subdirectory(3rdparty/3dsftk3)
-add_subdirectory(3rdparty/iniparser)
-
-add_subdirectory(MechoSoma)
-
-set_target_properties(${APPLICATION_NAME} PROPERTIES
-    CXX_STANDARD 17
-    CXX_STANDARD_REQUIRED YES
-    CXX_EXTENSIONS NO
+set(APPLICATION_SOURCES
+    Editor/main.cpp
 )
+
+if (APPLE)
+    add_executable(${APPLICATION_NAME} MACOSX_BUNDLE ${APPLICATION_SOURCES})
+    set_property(TARGET ${APPLICATION_NAME} PROPERTY MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/Editor/cMake/Info.plist.in")
+    target_compile_options(${APPLICATION_NAME} PRIVATE -x objective-c++)
+    target_link_libraries(${APPLICATION_NAME} PRIVATE stdc++
+            "-framework CoreFoundation" "-framework Cocoa" "-framework QuartzCore" "-framework OpenGL" 
+            "-framework CoreAudio" "-framework AudioToolbox" "-framework ForceFeedback" "-framework CoreHaptics"
+            "-framework GameController" "-framework IOKit" "-framework Carbon" "-framework Metal"
+            objc ZLIB::ZLIB Iconv::Iconv SDL2)
+endif(APPLE)
