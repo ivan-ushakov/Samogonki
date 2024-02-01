@@ -4,6 +4,11 @@
 #include <imgui_impl_sdl2.h>
 #include <imgui_impl_sdlrenderer2.h>
 
+#include "light_font.h"
+#include "main_screen.h"
+#include "regular_font.h"
+#include "task.h"
+
 int main()
 {
 	if (SDL_Init(SDL_INIT_VIDEO) != 0)
@@ -39,12 +44,38 @@ int main()
 		return 0;
 	}
 
+	editor::task::StartTaskManager();
+
 	// Setup Dear ImGui context
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	ImGuiIO& io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+	static const ImWchar glyph_ranges[] =
+	{
+		0x0020, 0x00FF, // Basic Latin + Latin Supplement
+		0x0100, 0x017F, // Latin Extended-A
+		0x0300, 0x036F, // Combining diacritics
+		0x0400, 0x052F, // Cyrillic + Cyrillic Supplement
+		0x2DE0, 0x2DFF, // Cyrillic Extended-A
+		0xA640, 0xA69F, // Cyrillic Extended-B
+		0,
+	};	
+
+	io.Fonts->AddFontFromMemoryCompressedBase85TTF(
+		editor::ui::light_font_data.data(),
+		18.0,
+		nullptr,
+		&glyph_ranges[0]
+	);
+
+	io.Fonts->AddFontFromMemoryCompressedBase85TTF(
+		editor::ui::regular_font_data.data(),
+		20.0,
+		nullptr,
+		&glyph_ranges[0]
+	);
 
 	// Setup Dear ImGui style
 	ImGui::StyleColorsDark();
@@ -53,14 +84,14 @@ int main()
 	ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
 	ImGui_ImplSDLRenderer2_Init(renderer);
 
-	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
+	editor::ui::MainScreen main_screen;
 	bool done = false;
 	while (!done)
 	{
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 		{
+			ImGui_ImplSDL2_ProcessEvent(&event);
 			if (event.type == SDL_QUIT)
 			{
 				done = true;
@@ -72,15 +103,18 @@ int main()
 			}
 		}
 
+		editor::task::FinishTasks();
+
 		// Start the Dear ImGui frame
 		ImGui_ImplSDLRenderer2_NewFrame();
 		ImGui_ImplSDL2_NewFrame();
 		ImGui::NewFrame();
 
+		main_screen.Render();
+
 		// Rendering
 		ImGui::Render();
 		SDL_RenderSetScale(renderer, io.DisplayFramebufferScale.x, io.DisplayFramebufferScale.y);
-		SDL_SetRenderDrawColor(renderer, (Uint8)(clear_color.x * 255), (Uint8)(clear_color.y * 255), (Uint8)(clear_color.z * 255), (Uint8)(clear_color.w * 255));
 		SDL_RenderClear(renderer);
 		ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
 		SDL_RenderPresent(renderer);
@@ -90,6 +124,8 @@ int main()
 	ImGui_ImplSDLRenderer2_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
+
+	editor::task::StopTaskManager();
 
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);

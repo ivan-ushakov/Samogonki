@@ -2,12 +2,18 @@ cmake_minimum_required(VERSION 3.20)
 
 project(EDITOR VERSION 1.0.0 LANGUAGES C CXX)
 
-SET(CMAKE_CONFIGURATION_TYPES "Release;Debug;MinSizeRel;RelWithDebInfo")
+set(CMAKE_CONFIGURATION_TYPES "Release;Debug;MinSizeRel;RelWithDebInfo")
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer -fsanitize=address")
+set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -fno-omit-frame-pointer -fsanitize=address")
+
 
 set(APPLICATION_NAME Editor)
 
 find_package(ZLIB REQUIRED)
 find_package(Iconv REQUIRED)
+
+add_subdirectory(3rdparty/SPSCQueue)
 
 include_directories(3rdparty/SDL-2.26.5/include/SDL2)
 link_directories(3rdparty/SDL-2.26.5/lib)
@@ -19,7 +25,24 @@ include_directories(MechoSoma/aciparser)
 include_directories(MechoSoma/XTool)
 
 set(APPLICATION_SOURCES
+    Editor/iscreen_editor.cpp
+    Editor/iscreen_editor.h
+    Editor/itext_editor.cpp
+    Editor/itext_editor.h
+    Editor/light_font.cpp
+    Editor/light_font.h
     Editor/main.cpp
+    Editor/main_screen.cpp
+    Editor/main_screen.h
+    Editor/regular_font.cpp
+    Editor/regular_font.h
+    Editor/scr_editor.cpp
+    Editor/scr_editor.h
+    Editor/task.h
+    Editor/task.cpp
+    Editor/text_converter.cpp
+    Editor/text_converter.h
+    # Game
     MechoSoma/aciparser/aci_parser.cpp
     MechoSoma/aciparser/aci_parser.h
     MechoSoma/XTool/filesystem.cpp
@@ -49,7 +72,7 @@ if (APPLE)
             "-framework CoreFoundation" "-framework Cocoa" "-framework QuartzCore" "-framework OpenGL" 
             "-framework CoreAudio" "-framework AudioToolbox" "-framework ForceFeedback" "-framework CoreHaptics"
             "-framework GameController" "-framework IOKit" "-framework Carbon" "-framework Metal"
-            objc ZLIB::ZLIB Iconv::Iconv SDL2)
+            objc ZLIB::ZLIB Iconv::Iconv SPSCQueue SDL2)
 endif(APPLE)
 
 set_target_properties(${APPLICATION_NAME} PROPERTIES
