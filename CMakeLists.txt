@@ -9,11 +9,36 @@ set(APPLICATION_NAME Editor)
 find_package(ZLIB REQUIRED)
 find_package(Iconv REQUIRED)
 
-include_directories(3rdparty/SDL-2.26.5/include)
+include_directories(3rdparty/SDL-2.26.5/include/SDL2)
 link_directories(3rdparty/SDL-2.26.5/lib)
+
+include_directories(3rdparty/imgui)
+include_directories(3rdparty/imgui/backends)
+
+include_directories(MechoSoma/aciparser)
+include_directories(MechoSoma/XTool)
 
 set(APPLICATION_SOURCES
     Editor/main.cpp
+    MechoSoma/aciparser/aci_parser.cpp
+    MechoSoma/aciparser/aci_parser.h
+    MechoSoma/XTool/filesystem.cpp
+    MechoSoma/XTool/inzip.cpp
+    MechoSoma/XTool/itoa.cpp
+    MechoSoma/XTool/outzip.cpp
+    MechoSoma/XTool/treezip.cpp
+    MechoSoma/XTool/xbcnvin.cpp
+    MechoSoma/XTool/xbcnvout.cpp
+    MechoSoma/XTool/xbcore.cpp
+    MechoSoma/XTool/xerrhand.cpp
+    MechoSoma/XTool/xstream.cpp
+    # ImGui
+    3rdparty/imgui/imgui.cpp
+    3rdparty/imgui/imgui_draw.cpp
+    3rdparty/imgui/imgui_tables.cpp
+    3rdparty/imgui/imgui_widgets.cpp
+    3rdparty/imgui/backends/imgui_impl_sdl2.cpp
+    3rdparty/imgui/backends/imgui_impl_sdlrenderer2.cpp
 )
 
 if (APPLE)
@@ -26,3 +51,9 @@ if (APPLE)
             "-framework GameController" "-framework IOKit" "-framework Carbon" "-framework Metal"
             objc ZLIB::ZLIB Iconv::Iconv SDL2)
 endif(APPLE)
+
+set_target_properties(${APPLICATION_NAME} PROPERTIES
+    CXX_STANDARD 17
+    CXX_STANDARD_REQUIRED YES
+    CXX_EXTENSIONS NO
+)

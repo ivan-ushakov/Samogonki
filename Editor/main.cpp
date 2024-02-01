@@ -1,4 +1,8 @@
-#include <SDL2/SDL.h>
+#include <SDL.h>
+
+#include <imgui.h>
+#include <imgui_impl_sdl2.h>
+#include <imgui_impl_sdlrenderer2.h>
 
 int main()
 {
@@ -28,9 +32,28 @@ int main()
 		return -1;
 	}
 
-	SDL_GLContext gl_context = SDL_GL_CreateContext(window);
-	SDL_GL_MakeCurrent(window, gl_context);
-	SDL_GL_SetSwapInterval(1); // Enable vsync
+	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
+	if (renderer == nullptr)
+	{
+		printf("Error creating SDL_Renderer!\n");
+		return 0;
+	}
+
+	// Setup Dear ImGui context
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+	// Setup Dear ImGui style
+	ImGui::StyleColorsDark();
+
+	// Setup Platform/Renderer backends
+	ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
+	ImGui_ImplSDLRenderer2_Init(renderer);
+
+	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 	bool done = false;
 	while (!done)
@@ -48,9 +71,27 @@ int main()
 				done = true;
 			}
 		}
+
+		// Start the Dear ImGui frame
+		ImGui_ImplSDLRenderer2_NewFrame();
+		ImGui_ImplSDL2_NewFrame();
+		ImGui::NewFrame();
+
+		// Rendering
+		ImGui::Render();
+		SDL_RenderSetScale(renderer, io.DisplayFramebufferScale.x, io.DisplayFramebufferScale.y);
+		SDL_SetRenderDrawColor(renderer, (Uint8)(clear_color.x * 255), (Uint8)(clear_color.y * 255), (Uint8)(clear_color.z * 255), (Uint8)(clear_color.w * 255));
+		SDL_RenderClear(renderer);
+		ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
+		SDL_RenderPresent(renderer);
 	}
 
-	SDL_GL_DeleteContext(gl_context);
+	// Cleanup
+	ImGui_ImplSDLRenderer2_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
+	ImGui::DestroyContext();
+
+	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 
