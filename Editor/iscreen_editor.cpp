@@ -580,7 +580,7 @@ void InterfaceScreenEditor::DrawProperties()
 
 			assert(object_index->dataType == 1);
 			assert(object_index->dataSize == 2);
-			assert(object_index->i_dataPtr[1] == object.id);
+			assert(object_index->i_dataPtr[1] != object.id);
 		}
 		
 		selected_screen.block->nextLevel->remove(object.block);
