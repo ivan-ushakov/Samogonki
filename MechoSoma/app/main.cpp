@@ -92,7 +92,7 @@ int game_main(int argc, char const *argv[]) {
   localization::setLanguage(gpx()->sys()->getLanguage().c_str());
 #else
 int main(int argc, char const *argv[]) {
-  #ifdef STEAM_VERSION
+  #ifdef STEAM_VERSION1
   if (!SteamAPI_Init()) {
     return 1;
   }
@@ -102,6 +102,7 @@ int main(int argc, char const *argv[]) {
     LanguagePair("english", "en"),
     LanguagePair("czech", "cz"),
     LanguagePair("italian", "it"),
+    LanguagePair("lithuanian", "lt"),
     LanguagePair("russian", "ru")
   };
 
