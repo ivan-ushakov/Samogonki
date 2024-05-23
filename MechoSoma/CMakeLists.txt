@@ -558,12 +558,22 @@ elseif (APPLE)
     set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
     add_executable(${APPLICATION_NAME} MACOSX_BUNDLE ${APPLICATION_SOURCES})
     set_property(TARGET ${APPLICATION_NAME} PROPERTY MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_SOURCE_DIR}/CMake/Info.plist.in")
-    target_compile_options(${APPLICATION_NAME} PRIVATE -x objective-c++)
-    target_link_libraries(${APPLICATION_NAME} PRIVATE stdc++
-            "-framework CoreFoundation" "-framework Cocoa" "-framework QuartzCore" "-framework OpenGL" 
-            "-framework CoreAudio" "-framework AudioToolbox" "-framework ForceFeedback" "-framework CoreHaptics"
-            "-framework GameController" "-framework IOKit" "-framework Carbon" "-framework Metal"
-            objc ${LIBRARY_NAME} ${COMMON_APPLICATION_LIBRARIES})
+    target_link_libraries(${APPLICATION_NAME} PRIVATE
+        "-framework AudioToolbox"
+        "-framework Carbon"
+        "-framework Cocoa"
+        "-framework CoreAudio"
+        "-framework CoreFoundation"
+        "-framework CoreHaptics"
+        "-framework ForceFeedback"
+        "-framework GameController"
+        "-framework IOKit"
+        "-framework Metal"
+        "-framework OpenGL" 
+        "-framework QuartzCore"
+        ${LIBRARY_NAME}
+        ${COMMON_APPLICATION_LIBRARIES}
+    )
 
     if (STEAM_VERSION)
         set(APP_BUNDLE_CONTENTS_DIR "${CMAKE_CURRENT_BINARY_DIR}/${APPLICATION_NAME}.app/Contents")
