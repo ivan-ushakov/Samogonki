@@ -92,15 +92,16 @@ int game_main(int argc, char const *argv[]) {
   localization::setLanguage(gpx()->sys()->getLanguage().c_str());
 #else
 int main(int argc, char const *argv[]) {
-  #ifdef STEAM_VERSION1
+  #ifdef STEAM_VERSION
   if (!SteamAPI_Init()) {
     return 1;
   }
 
   using LanguagePair = std::pair<std::string_view, std::string_view>;
-  constexpr std::array<LanguagePair, 4> map{
-    LanguagePair("english", "en"),
+  constexpr std::array<LanguagePair, 6> map{
     LanguagePair("czech", "cz"),
+    LanguagePair("english", "en"),
+    LanguagePair("french", "fr"),
     LanguagePair("italian", "it"),
     LanguagePair("lithuanian", "lt"),
     LanguagePair("russian", "ru")
