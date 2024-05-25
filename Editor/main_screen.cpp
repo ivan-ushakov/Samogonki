@@ -18,10 +18,12 @@ namespace
 	constexpr const char *open_file_dialog_title = "Open";
 
 	using CodePagePair = std::pair<const char *, const char *>;
-	constexpr std::array<CodePagePair, 4> codepage_list{
+	constexpr std::array<CodePagePair, 6> codepage_list{
 		CodePagePair{"cz", "cp1250"},
 		CodePagePair{"en", "cp1250"},
+		CodePagePair{"fr", "cp1250"},
 		CodePagePair{"it", "cp1250"},
+		CodePagePair{"lt", "cp1250"},
 		CodePagePair{"ru", "cp1251"}
 	};
 
