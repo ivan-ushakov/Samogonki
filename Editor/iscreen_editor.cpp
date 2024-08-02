@@ -138,6 +138,8 @@ struct Object final
 	ImVec2 align{};
 	scrDataBlock *string_block = nullptr;
 	std::string string_value;
+	std::vector<std::string> state_strings;
+	int current_state = 0;
 
 	std::unordered_map<int, scrDataBlock *> properties;
 	scrDataBlock *block = nullptr;
@@ -263,10 +265,16 @@ aci::Object CreateObject(scrDataBlock *block, editor::util::TextConverter &conve
 				result.align.y = b->i_dataPtr[0];
 				break;
 
-			case ASCR_STRING:
-				assert(b->dataType == 3);
-				result.string_value = converter.Convert(std::string_view(b->c_dataPtr, b->dataSize));
-				result.string_block = b;
+			case ASCR_MAX_STATE:
+				assert(b->dataType == 1);
+				assert(b->dataSize == 1);
+				result.state_strings.resize(b->i_dataPtr[0] + 1);
+				break;
+
+			case ASCR_CUR_STATE:
+				assert(b->dataType == 1);
+				assert(b->dataSize == 1);
+				result.current_state = b->i_dataPtr[0];
 				break;
 
 			default:
@@ -274,7 +282,33 @@ aci::Object CreateObject(scrDataBlock *block, editor::util::TextConverter &conve
 				break;
 		}
 		b = b->next;
-	}	
+	}
+
+	b = block->nextLevel->first();
+	size_t state_string_index = 0;
+	while (b != nullptr)
+	{
+		switch (b->ID)
+		{
+			case ASCR_STRING:
+				assert(b->dataType == 3);
+				result.string_value = converter.Convert(std::string_view(b->c_dataPtr, b->dataSize));
+				result.string_block = b;
+				break;
+
+			case ASCR_STATE_STR:
+				assert(b->dataType == 3);
+				assert(!result.state_strings.empty() && state_string_index < result.state_strings.size());
+				result.state_strings[state_string_index] = 
+					converter.Convert(std::string_view(b->c_dataPtr, b->dataSize));
+				state_string_index += 1;
+				break;
+
+			default:
+				break;
+		}
+		b = b->next;
+	}
 
 	return result;
 }
@@ -552,6 +586,28 @@ void InterfaceScreenEditor::DrawProperties()
 	DrawVec2Property("Position", object.position);
 	DrawVec2Property("Size", object.size);
 	DrawVec2Property("Align", object.align);
+
+	ImGui::PushFont(regular_font);
+	ImGui::Text("State strings");
+	ImGui::PopFont();
+	if (ImGui::BeginListBox("##state"))
+	{
+		for (size_t i = 0; i < object.state_strings.size(); i++)
+		{
+			const bool is_selected = i == object.current_state;
+			const auto &state = object.state_strings[i];
+			if (ImGui::Selectable(state.c_str(), is_selected))
+			{
+				object.current_state = i;
+			}
+
+			if (is_selected)
+			{
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndListBox();
+	}
 
 	ImGui::PushFont(regular_font);
 	ImGui::Text("Text");
